@@ -3,6 +3,5 @@ import {getDonnees} from "./gallery.js"
 
 window.onload = () => {
   init("https://webetu.iutnc.univ-lorraine.fr/");
-
-  getDonnees();
+  $("#load_gallery").on("click",getDonnees);
 };

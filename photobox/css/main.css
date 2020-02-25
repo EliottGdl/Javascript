@@ -65,7 +65,7 @@ nav #next {
   height: auto;
 }
 
-#lightbox_container {
+.lightbox_container {
     display : none;
 }
 
