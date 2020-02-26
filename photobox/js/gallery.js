@@ -14,21 +14,20 @@ let afficher = ({data}) => {
    let photos = data.photos;
    for (let p of photos) {
      $(`
-      <a href="#?w=500" rel="lightBox${p.photo.titre}" class="poplight">
        <div class="vignette" >
+          <a href="#?w=500" rel="lightBox${p.photo.titre}" class="poplight">
            <img id="responsive"
            ata-img="${serveur_url + p.photo.thumbnail.href}"
             data-uri="${serveur_url + p.links.href}"
            src="${serveur_url + p.photo.original.href}">
+           </a>
+
            <div>${p.photo.titre}</div>
-
        </div>
-      </a>
        `).appendTo($("#photobox-gallery"));
-   }
 
-   $(`
-   <div class="lightboc_container" id="lightbox_container">
+   $($(`
+   <div id="lightbox_container">
         <div id="lightbox">
             <div id="lightbox-head">
                 <p id="lightbox_close">-X-</p>
@@ -41,6 +40,8 @@ let afficher = ({data}) => {
         </div>
 
     </div>
-    `).appendTo($("#gallery"));
+    `).attr("id","lightbox_container")).appendTo($("#gallery"));
+
+    }
 
 }
