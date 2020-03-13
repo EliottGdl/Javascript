@@ -1,0 +1,143 @@
+body,div nav, ul,p , h1{
+    margin : 0;
+    padding : 0;
+}
+img {
+    max-width: 100%;
+    height: auto;
+}
+header {
+    margin:0;
+    padding:2em;
+    background-color: #0769AD;
+    width:100%;
+    height: 12em;
+}
+
+/**
+ *      text section defs
+ **/
+.hop {
+
+}
+
+
+/**
+ *      vanish section defs
+ **/
+
+.boite_orange {
+    height: 100px;
+    width: 100px;
+    display: inline-block;
+    background-color: #F38630;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 100px;
+}
+
+
+/**
+ *      menu section defs
+ **/
+
+
+
+
+li.menu {
+    vertical-align: top;
+    display: inline-block;
+    margin:0;
+    padding: 0;
+    width:8em;
+    position: relative;
+}
+
+p.sub {
+    padding: 0.2em 0 0.2em 0.3em;
+    color: white;
+    background-color: black;
+}
+p.sub:hover {
+    background-color: grey;
+}
+
+li.menu > ul {
+    display:none;
+    list-style: none;
+    color: white;
+    background-color: grey;
+    width: 8em;
+
+    position: absolute;
+    left: 0;
+
+}
+
+li.menu > ul >li:hover {
+    color : black;
+}
+
+a {
+    display:block;
+    color: inherit;
+    text-decoration: none;
+    margin-bottom: 0.5em;
+    padding-left: 0.3em;
+}
+
+
+/**
+ *      slide section defs
+ **/
+
+#slider {
+    width: 40%;
+    /*margin-left: 60%;*/
+    box-sizing: border-box;
+
+    position:absolute;
+    left:60%;
+}
+.slidingContent {
+    box-sizing: border-box;
+    height: 8em;
+    background-color: deepskyblue;
+
+    display:none;
+}
+#showContent {
+    box-sizing: border-box;
+    width: 30%; margin-left: 65%;
+    height: 3em;
+    background-color: deepskyblue;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding : 1em;
+    text-align: center;
+    border: none;
+}
+#showContent:focus {
+    outline:0;
+}
+
+/**
+ *      modal section defs
+ **/
+
+.modal {
+
+    display: none;
+}
+
+.modal > div > .modal_close {
+
+}
+
+.modal > .modal_content {
+
+}
+img {
+    max-width: 100%;
+    height: auto;
+}

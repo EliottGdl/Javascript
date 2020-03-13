@@ -9,5 +9,5 @@ export let load = (url) => {
   return axios.get(serveur_url + url,{
       withCredentials: true,
       responseType: 'json',
-  }).catch(()=>console.log("Url non joignable"));
+  }).catch(()=>console.log("Url non joignable " + serveur_url + url));
 }
