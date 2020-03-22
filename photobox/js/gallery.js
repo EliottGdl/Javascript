@@ -1,58 +1,85 @@
-import {load,serveur_url} from "./photoloader.js"
+import { load, serveur_url } from "./photoloader.js";
 
 let identifiants;
 let urls;
 let tablP;
+let page;
+let titre, desc, pseudo;
 
 export let construct = () => {
   urls = [];
   tablP = [];
+  page = 0;
   urls["prev"] = undefined;
   urls["next"] = undefined;
-}
+};
 
 export let getDonnees = () => {
-  load("/www/canals5/photobox/photos/?offset=8&size=12").then(afficher);
-}
+  load("/www/canals5/photobox/photos/?offset=8&size=12")
+    .then(afficher)
+    .then(majBouton);
+};
 
 export let suivant = () => {
-  if(urls["next"]) load(urls["next"]).then(afficher)
-}
+  if (urls["next"])
+    load(urls["next"])
+      .then(afficher)
+      .then(() => {
+        page++;
+        majBouton();
+      });
+};
 
 export let precedent = () => {
-  if(urls["prev"]) {
-    load(urls["prev"]).then(afficher)
+  if (urls["prev"]) {
+    load(urls["prev"])
+      .then(afficher)
+      .then(() => {
+        page--;
+        majBouton();
+      });
   }
-}
+};
 
-let suiv = (e) => {
+let suiv = e => {
   let id = $(e.target).attr("refer");
   $("#lightbox_close").trigger("click");
   id++;
-  if(typeof tablP[id] !== 'undefined') {
-    $("#"+id).trigger("click");
+  if (typeof tablP[id] !== "undefined") {
+    $("#" + id).trigger("click");
   } else {
-    load(urls["next"]).then(afficher).then(id = 0);
-    $("#"+id).trigger("click");
-
+    load(urls["next"])
+      .then(afficher)
+      .then(() => (id = 0))
+      .then(() => $("#" + id).trigger("click"));
   }
-}
+};
 
-let prec = (e) => {
+let prec = e => {
   let id = $(e.target).attr("refer");
   $("#lightbox_close").trigger("click");
   id--;
-  if(typeof tablP[id] !== 'undefined') {
-    $("#"+id).trigger("click");
+  if (typeof tablP[id] !== "undefined") {
+    $("#" + id).trigger("click");
   } else {
-    load(urls["prev"]).then(afficher).then(id = tablP.length - 1);
-    $("#"+id).trigger("click");
-
+    load(urls["prev"])
+      .then(afficher)
+      .then(() => (id = tablP.length - 1))
+      .then(() => $("#" + id).trigger("click"));
   }
-}
+};
 
+let majBouton = () => {
+  if (page == 0) {
+    $("#previous").attr("disabled", "disabled");
+    $("#previous").html("Pas de page précédente")
+  } else {
+    $("#previous").html("Prev page");
+    $("#previous").removeAttr("disabled");
+  }
+};
 
-let afficher = ({data}) => {
+let afficher = ({ data }) => {
   let photos = data.photos;
 
   urls["prev"] = data.links.prev.href;
@@ -73,25 +100,26 @@ let afficher = ({data}) => {
       </br>
       <div>${p.photo.titre}</div>
       </div>
-      `).on("click",() => {
-        toggleLightBox(p.id,p)
-      }).appendTo($("#photobox-gallery"));
-      idd++;
-
+      `)
+      .on("click", () => {
+        toggleLightBox(p.id, p);
+      })
+      .appendTo($("#photobox-gallery"));
+    idd++;
   }
-}
+};
 
-function toggleLightBox (id,p) {
-
-      $(`
+function toggleLightBox(id, p) {
+  $(`
 
         <div id="myModel" class="modal">
           <span id="lightbox_close" class="close cursor">&times;</span>
           <div class="modal-content">
 
-          <div class="mySlides">
-            <div class="numbertext"> ${id + 1} / ${tablP.length} </div>
-            <img src="${serveur_url + p.photo.original.href}" style="width:100%">
+          <div class="lightBox">
+            <div class="surCombien"> ${id + 1} / ${tablP.length} </div>
+            <img class="responsive" src="${serveur_url +
+              p.photo.original.href}" style="width:100%">
             <p style="font-size:20px;text-align:center"> ${p.photo.titre} </p>
           </div>
 
@@ -99,66 +127,108 @@ function toggleLightBox (id,p) {
             <a class="next" refer="${id}" id="suiv"> &#10095; </a>
         </div>
 
-      `).attr("id","lightbox_container").appendTo($("#gallery"));
+      `)
+    .attr("id", "lightbox_container")
+    .appendTo($("#gallery"));
 
-      load("/www/canals5/photobox/photos/"+ p.photo.id).then(afficherDesc).then(() => load("/www/canals5/photobox/photos/"+ p.photo.id + "/comments").then((data)=>afficherCommentaires(data,p.photo.id)));
+  load("/www/canals5/photobox/photos/" + p.photo.id)
+    .then(afficherDesc)
+    .then(() =>
+      load(
+        "/www/canals5/photobox/photos/" + p.photo.id + "/comments"
+      ).then(data => afficherCommentaires(data, p.photo.id))
+    );
 
-      $('#lightbox_close').on("click",() => $("#lightbox_container").remove());
-      $('#prec').click(prec);
-      $('#suiv').click(suiv);
-
+  $("#lightbox_close").on("click", () => $("#lightbox_container").remove());
+  $("#prec").click(prec);
+  $("#suiv").click(suiv);
 }
 
-let gerer = (pe) => {
+let gerer = (id) => {
+  if (titre && pseudo && desc) {
+    axios.post(
+      serveur_url + "/www/canals5/photobox/photos/" + id + "/comments",
+      null,
+      {
+        withCredentials: true,
+        responseType: "json",
+        data: {
+          titre: titre,
+          content: desc,
+          pseudo: pseudo
+        }
+      }
+    );
+    titre = undefined;
+    desc = undefined;
+    pseudo = undefined;
 
-  let entrees = $("input.entree");
-
-  for(let ent of entrees) {
-
-
+    $("#titre").val("");
+    $("#desc").val("");
+    $("#pseudo").val("");
   }
+};
 
-}
-
-let afficherCommentaires = ({data},id) => {
-
+let afficherCommentaires = ({ data }, id) => {
   let paragraphe = "";
 
-  for(let com of data.comments) {
+  for (let com of data.comments) {
     paragraphe += `
     </br>
     <li>Titre : ${com.titre} </br></li>
     <li>Description : ${com.content} </br></li>
     <li>Ecrit par : ${com.pseudo} le ${com.date}</br></li> </br>
+    <p> --------------- </p> </br>
     `;
   }
 
   $(`
     <p style="color:white;font-size:25px;text-align:center"> Commentaires : </p>
-    <div style="color:white;font-size:20px;width:70%;margin-bottom:20px;">
+    <div style="max-width:900px;color:white;font-size:20px;margin-bottom:20px;margin-left:auto;margin-right:auto;">
     ${paragraphe}
+    </div>
+
+    <p style="color:white;font-size:25px;text-align:center"> Ajouter un commentaire : </p>
+    </br>
+    <div style="display:flex;justify-content:center;color:white;font-size:20px;margin-bottom:20px;margin-left:10px;margin-right:10px;">
 
     <form id="formAj" name="envoieDeDonnees">
         <label>Titre :</label>
-        <input class="entree" type="text"  name="titre"></input>
+        <input id="titre" class="entree" type="text"  name="titre"></input>
         <label>Contenu :</label>
-        <input class="entree"  type="text" name="desc"></input>
+        <input id="desc" class="entree"  type="text" name="desc"></input>
         <label> Pseudo :</label>
-        <input class="entree"  type="text" name="pseudo"></input>
+        <input id="pseudo" class="entree"  type="text" name="pseudo"></input>
     <input type="button" id="postSmth" value="Poster le commentaire">
 
 </form>
 </div>
-
     `).appendTo($("#lightbox_container"));
 
-    $("#postSmth").click(gerer)
-}
+  $("#postSmth").click(()=>gerer(id));
+  $("#formAj").change(handleChange);
+};
 
-let afficherDesc = ({data}) => {
+let handleChange = event => {
+  let val = $("#" + event.target.name).val();
+  switch (event.target.name) {
+    case "titre":
+      titre = val;
+      break;
+    case "desc":
+      desc = val;
+      break;
+    case "pseudo":
+      pseudo = val;
+      break;
+  }
+};
+
+let afficherDesc = ({ data }) => {
   $(`
     <p style="color:white;font-size:25px;text-align:center"> Détail de la photo : </p>
-    <div style="color:white;font-size:20px;width:70%;margin-bottom:20px;">
+    </br>
+    <div style="max-width:900px;color:white;font-size:20px;margin-bottom:20px;margin-left:auto;margin-right:auto;">
 
     <li>Nom du fichier : ${data.photo.file} </br></li>
 
@@ -169,4 +239,4 @@ let afficherDesc = ({data}) => {
     <li>Longeur : ${data.photo.width} </br></li>
     <li>Hauteur : ${data.photo.height} </br> </li>
     </div>`).appendTo($("#lightbox_container"));
-}
+};
