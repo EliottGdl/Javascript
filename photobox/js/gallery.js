@@ -1,6 +1,5 @@
 import { load, serveur_url } from "./photoloader.js";
 
-let identifiants;
 let urls;
 let tablP;
 let page;
@@ -158,7 +157,7 @@ let gerer = (id) => {
           pseudo: pseudo
         }
       }
-    );
+    ).then(() => reload(id));
     titre = undefined;
     desc = undefined;
     pseudo = undefined;
@@ -168,6 +167,33 @@ let gerer = (id) => {
     $("#pseudo").val("");
   }
 };
+
+let reload = (id) => {
+  load(
+      "/www/canals5/photobox/photos/" + id + "/comments"
+  ).then(({data}) => {
+    let paragraphe = "";
+
+    for (let com of data.comments) {
+      paragraphe += `
+      </br>
+      <li>Titre : ${com.titre} </br></li>
+      <li>Description : ${com.content} </br></li>
+      <li>Ecrit par : ${com.pseudo} le ${com.date}</br></li> </br>
+      <p> --------------- </p> </br>
+      `;
+    }
+    $("#coms"+id).replaceWith(`
+      <div id="coms${id}" style="max-width:900px;color:white;font-size:20px;margin-bottom:20px;margin-left:auto;margin-right:auto;">
+        ${paragraphe}
+      </div>
+    `);
+
+
+  }).then(() =>  document.getElementById("lightbox_container").scrollTop = 0);
+
+
+}
 
 let afficherCommentaires = ({ data }, id) => {
   let paragraphe = "";
@@ -184,7 +210,7 @@ let afficherCommentaires = ({ data }, id) => {
 
   $(`
     <p style="color:white;font-size:25px;text-align:center"> Commentaires : </p>
-    <div style="max-width:900px;color:white;font-size:20px;margin-bottom:20px;margin-left:auto;margin-right:auto;">
+    <div id="coms${id}" style="max-width:900px;color:white;font-size:20px;margin-bottom:20px;margin-left:auto;margin-right:auto;">
     ${paragraphe}
     </div>
 

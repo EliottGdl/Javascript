@@ -8,10 +8,13 @@ On peut aussi cliquer sur une image :
 1) Celle-ci s'affiche alors entièrement dans une lightbox
 2) On peut voir en dessous une description de l'image
 3) On peut aussi voir les commentaires ajoutés
-4) Et finalement on peut ajouter un commentaire grâce à un formulaire
+4) Et finalement on peut ajouter un commentaire grâce à un formulaire.
+	Celui-ci ajoute dynamiquement le commentaire au document html une fois validé
+	et redirige l'utilisateur en haut de la lightbox.
+
 5) A gauche et à droite de l'image se trouve des flèches permettant de changer d'image (avant ou après), et de recharger une gallerie
 	si il n'y a plus d'images sur l'actuelle
 6) En haut à droite se trouve une croix permettant de fermer la lightbox
 
-
 GANDIOLLE,NOIRJEAN
+Webetu : https://webetu.iutnc.univ-lorraine.fr/www/gandioll4u/Javascript/photobox/
