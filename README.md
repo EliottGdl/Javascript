@@ -1,2 +1,2 @@
-# Here are some of my projects made by using javascript (and mainly the processing library)
-they aren't all finish or optimized
+# Here are some of my projects made using javascript (and mainly the processing library)
+they aren't all finished or optimized
